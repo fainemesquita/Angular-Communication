@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 
 import { IProduct } from './product';
 import { ProductService } from './product.service';
@@ -16,6 +16,8 @@ export class ProductListComponent implements OnInit {
   imageMargin = 2;
   errorMessage = ''
 
+  @ViewChild('filterElement') filterElementRef: ElementRef | undefined;
+
   private _listFilter = ''
   get listFilter(): string {
     return this._listFilter;
@@ -30,6 +32,10 @@ export class ProductListComponent implements OnInit {
   products: IProduct[] = [];
 
   constructor(private productService: ProductService) { }
+
+  ngAfterViewInit(): void {
+    this.filterElementRef?.nativeElement.focus()
+  }
 
   ngOnInit(): void {
     this.productService.getProducts().subscribe({
