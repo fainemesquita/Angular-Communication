@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, ElementRef, ViewChildren, QueryList } from '@angular/core';
 
 import { IProduct } from './product';
 import { ProductService } from './product.service';
@@ -16,7 +16,11 @@ export class ProductListComponent implements OnInit {
   imageMargin = 2;
   errorMessage = ''
 
+  filterName= ''
+
   @ViewChild('filterElement') filterElementRef: ElementRef | undefined;
+  @ViewChildren ('filterName, nameElement')
+  inputElementRefs: QueryList<ElementRef> | undefined
 
   private _listFilter = ''
   get listFilter(): string {
@@ -35,6 +39,7 @@ export class ProductListComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.filterElementRef?.nativeElement.focus()
+    console.log(this.inputElementRefs)
   }
 
   ngOnInit(): void {
