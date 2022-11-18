@@ -30,7 +30,10 @@ export class ProductListComponent implements OnInit {
       error: err => this.errorMessage = err
     });
   }
-
+  onFilterChange(filter: string): void {
+    this.listFilter = filter;
+    this.performFilter(this.listFilter)
+  }
   toggleImage(): void {
     this.showImage = !this.showImage;
   }
