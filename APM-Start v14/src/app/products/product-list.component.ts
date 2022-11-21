@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, AfterViewInit, ElementRef, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { CriteriaComponent } from '../shared/criteria/criteria.component';
 
 import { IProduct } from './product';
 import { ProductService } from './product.service';
@@ -11,50 +12,50 @@ export class ProductListComponent implements OnInit {
   pageTitle = 'Product List';
   //listFilter = ''; we can't define a property with the declaration AND a getter and setter 
   showImage = false;
+  includeDetail = true;
+  @ViewChild(CriteriaComponent)
+  filterComponent!: CriteriaComponent;
+  parentListFilter = '';
 
   imageWidth = 50;
   imageMargin = 2;
   errorMessage = ''
 
-  filterName= ''
-
-  @ViewChild('filterElement') filterElementRef: ElementRef | undefined;
-  @ViewChildren ('filterName, nameElement')
-  inputElementRefs: QueryList<ElementRef> | undefined
-
-  private _listFilter = ''
-  get listFilter(): string {
-    return this._listFilter;
-  }
-
-  set listFilter(value: string) {
-      this._listFilter = value;
-      this.performFilter(this.listFilter)
-  }
-
   filteredProducts: IProduct[] = [];
   products: IProduct[] = [];
+
+
+  // private _listFilter = ''
+  // get listFilter(): string {
+  //   return this._listFilter;
+  // }
+
+  // set listFilter(value: string) {
+  //     this._listFilter = value;
+  //     this.performFilter(this.listFilter)
+  // }
+
 
   constructor(private productService: ProductService) { }
 
   ngAfterViewInit(): void {
-    this.filterElementRef?.nativeElement.focus()
-    console.log(this.inputElementRefs)
+    this.parentListFilter = this.filterComponent.listFilter
+
   }
 
   ngOnInit(): void {
     this.productService.getProducts().subscribe({
       next: products => {
         this.products = products;
-        this.performFilter(this.listFilter);
+        this.performFilter(this.parentListFilter);
       },
       error: err => this.errorMessage = err
     });
   }
-  onFilterChange(filter: string): void {
-    this.listFilter = filter;
-    this.performFilter(this.listFilter)
-  }
+  // onFilterChange(filter: string): void {
+  //   this.listFilter = filter;
+  //   this.performFilter(this.listFilter)
+  // }
   toggleImage(): void {
     this.showImage = !this.showImage;
   }
