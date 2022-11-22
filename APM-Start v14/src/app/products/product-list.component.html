@@ -4,9 +4,9 @@
       class="col-md-10" 
       [displayDetail]="includeDetail" 
       [hitCount]="filteredProducts?.length"
+      (valueChange)="onValueChange($event)"
     >
     </pm-criteria>
-    {{filterCriteria.listFilter}}
   </div>
   <div class='card-body'>
     <div class='table-responsive'>

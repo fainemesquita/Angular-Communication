@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, AfterViewInit, OnChanges, ViewChild, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, AfterViewInit, OnChanges, ViewChild, SimpleChanges, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'pm-criteria',
@@ -6,12 +6,22 @@ import { Component, ElementRef, Input, OnInit, AfterViewInit, OnChanges, ViewChi
   styleUrls: ['./criteria.component.css']
 })
 export class CriteriaComponent implements OnInit {
-  listFilter: string = 'cart';
   @Input() displayDetail: boolean | undefined;
   @Input() hitCount: number | undefined;
   hitMessage = '';
+  @Output() valueChange: EventEmitter<string> = 
+              new EventEmitter<string>();
 
   @ViewChild('filterElement') filterElementRef: ElementRef | undefined;
+
+  private _listFilter!: string;
+  get listFilter(): string {
+    return this._listFilter;
+  }
+  set listFilter(value: string) {
+    this._listFilter = value;
+    this.valueChange.emit(value);
+  }
 
   constructor() { }
 
@@ -25,7 +35,7 @@ export class CriteriaComponent implements OnInit {
     if (changes['hitCount'] && !changes['hitCount'].currentValue){
       this.hitMessage = 'No matches found';
     } else {
-      this.hitMessage = 'Hits: ' + this.hitCount
+      this.hitMessage = 'Results: ' + this.hitCount
     }
   }
 
