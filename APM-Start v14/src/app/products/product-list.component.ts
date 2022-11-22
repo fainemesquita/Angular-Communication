@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angula
 import { CriteriaComponent } from '../shared/criteria/criteria.component';
 
 import { IProduct } from './product';
+import { ProductParameterService } from './product-parameter.service';
 import { ProductService } from './product.service';
 
 @Component({
@@ -11,7 +12,6 @@ import { ProductService } from './product.service';
 export class ProductListComponent implements OnInit {
   pageTitle = 'Product List';
   //listFilter = ''; we can't define a property with the declaration AND a getter and setter 
-  showImage = false;
   includeDetail = true;
   @ViewChild(CriteriaComponent)
   filterComponent!: CriteriaComponent;
@@ -25,18 +25,15 @@ export class ProductListComponent implements OnInit {
   products: IProduct[] = [];
 
 
-  // private _listFilter = ''
-  // get listFilter(): string {
-  //   return this._listFilter;
-  // }
+  get showImage(): boolean{
+    return this.productParameterService.showImage;
+  }
+  set showImage(value:boolean) {
+    this.productParameterService.showImage = value;
+  }
 
-  // set listFilter(value: string) {
-  //     this._listFilter = value;
-  //     this.performFilter(this.listFilter)
-  // }
-
-
-  constructor(private productService: ProductService) { }
+  constructor(private productService: ProductService,
+              private productParameterService: ProductParameterService) { }
 
   ngAfterViewInit(): void {
     this.parentListFilter = this.filterComponent.listFilter
@@ -47,7 +44,9 @@ export class ProductListComponent implements OnInit {
     this.productService.getProducts().subscribe({
       next: products => {
         this.products = products;
-        this.performFilter(this.parentListFilter);
+        this.filterComponent.listFilter = 
+          this.productParameterService.filteredBy
+        //this.performFilter(this.parentListFilter);
       },
       error: err => this.errorMessage = err
     });
@@ -58,6 +57,7 @@ export class ProductListComponent implements OnInit {
   // }
 
   onValueChange(value: string): void {
+    this.productParameterService.filteredBy = value;
     this.performFilter(value)
   }
 
